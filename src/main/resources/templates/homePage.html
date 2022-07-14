@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>TASK MANAGER</title>
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+    <body class="mb-5">
+    <div th:insert="~{navbar.html}"></div>
+    <div class="container">
+
+        <div class="row">
+            <div class="col-8 mx-auto mt-5">
+                <button type="button" class="bg-white border-0" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <h2><b>Добавить новую папку+</b></h2>
+                </button>
+            </div>
+        </div>
+
+        <div class="row" th:each="folder:${folders}">
+            <div class="col-8 mx-auto mt-4">
+                <div class="card">
+                    <div class="card">
+                        <div class="card-header" >
+                            <h5 th:text="${folder.name}"></h5>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-title" th:text="${folder.description}"></h6>
+                            <a class="btn btn-primary mt-3" th:href="@{'/folder/'+${folder.id}}"><i class="fa fa-folder"></i>&nbsp;Просмотреть папку</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Добавьте новую папку</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" th:action="@{'/addNewFolder'}">
+                        <label for="input1" class="form-label">Введите заголовок папки</label>
+                        <input id="input1"  placeholder="ввидите заголовок папки" type="text" class="form-control" name="title">
+                        <label for="input2" class="form-label mt-3">Введите заголовок папки</label>
+                        <textarea id="input2" placeholder="ввидите описание папки" class="form-control" name="description"></textarea>
+                        <button type="submit" class="btn btn-success mt-3">Добавить</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </body>
+</html>

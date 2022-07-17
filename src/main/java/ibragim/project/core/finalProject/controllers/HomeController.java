@@ -1,9 +1,11 @@
 package ibragim.project.core.finalProject.controllers;
 
 import ibragim.project.core.finalProject.models.Category;
+import ibragim.project.core.finalProject.models.Commentary;
 import ibragim.project.core.finalProject.models.Folder;
 import ibragim.project.core.finalProject.models.Task;
 import ibragim.project.core.finalProject.services.CategoriesService;
+import ibragim.project.core.finalProject.services.CommentsService;
 import ibragim.project.core.finalProject.services.FoldersService;
 import ibragim.project.core.finalProject.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ public class HomeController {
 
     @Autowired
     CategoriesService categoriesService;
+
+    @Autowired
+    CommentsService commentsService;
 
     @GetMapping(value = "/")
     public String getMainPage(Model model){
@@ -103,6 +108,59 @@ public class HomeController {
         if (folder!=null){
             foldersService.addNewFolder(folder);
             return "redirect:/folder/"+folder.getId();
+        }
+        return null;
+    }
+
+    @PostMapping(value = "/deleteFolder")
+    public String deleteFolder(@RequestParam("folderId") Long folderId){
+        if(folderId!=null){
+            foldersService.deleteFolderById(folderId);
+        }
+        return "redirect:/";
+    }
+
+    @PostMapping(value = "/deleteCategory")
+    public String deleteCategory(@RequestParam("folder_id") Long folderId,
+                                 @RequestParam("category_id") Long categoryId){
+        Folder folder = foldersService.deleteCategoryFromFolder(folderId, categoryId);
+        return "redirect:/folder/"+folder.getId();
+    }
+
+    @GetMapping(value = "/task/{taskId}")
+    public String getTaskDetails(@PathVariable("taskId") Long id,
+                                 Model model){
+        Task task = taskService.getTaskById(id);
+        List<Commentary> commentaries = commentsService.getCommentsById(id);
+        if (!commentaries.isEmpty()){
+            model.addAttribute("comments", commentaries);
+        }
+        model.addAttribute("task", task);
+        return"taskPage";
+    }
+
+    @PostMapping("/renewTaskInfo")
+    public String renewTaskInfo(@RequestParam(name = "id")Long id,
+                                @RequestParam(name = "status") int status){
+        Task task = taskService.changeStatusOfTheTask(id, status);
+        return "redirect:/folder/"+task.getFolder().getId();
+    }
+
+    @PostMapping(value = "/deleteTask")
+    public String deleteTask(@RequestParam("taskId") Long taskId){
+        Task t = taskService.getTaskById(taskId);
+        taskService.deleteTaskById(taskId);
+        return "redirect:/folder/"+t.getFolder().getId();
+    }
+
+    @PostMapping(value = "/addComment")
+    public String addComment(@RequestParam("text") String text,
+                             @RequestParam("taskId") Long taskId){
+        if(taskId!=null && text!=null){
+            Commentary commentary = new Commentary();
+            commentary.setText(text);
+            commentsService.addCommentToTask(taskId, commentary);
+            return "redirect:/task/"+taskId;
         }
         return null;
     }

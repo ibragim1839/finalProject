@@ -5,6 +5,7 @@ import ibragim.project.core.finalProject.repositories.TasksRepository;
 import ibragim.project.core.finalProject.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,5 +30,30 @@ public class TasksServiceImpl implements TaskService {
             return tasksRepository.save(task);
         }
       return null;
+    }
+
+    @Override
+    public Task getTaskById(Long id) {
+        if(id!=null){
+            Task task = tasksRepository.findById(id).orElse(null);
+            return task;
+        }
+        return null;
+    }
+
+    @Override
+    public Task changeStatusOfTheTask(Long taskId, int statusId) {
+        if(taskId!=null){
+            Task task = getTaskById(taskId);
+            task.setStatus(statusId);
+            return addTask(task);
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteTaskById(Long id) {
+        tasksRepository.deleteById(id);
+
     }
 }

@@ -12,22 +12,28 @@
 
         <div class="container">
             <div class="row">
-                <div class="col-12 p-3 mx-auto mt-5" style="max-height: 200px ;border: 1px solid grey; border-radius: 10px">
+                <div class="col-12 p-3 mx-auto mt-5" style="max-height: 500px ;border: 1px solid grey; border-radius: 10px">
+                    <h1 th:text="${folder.name}"></h1>
+                    <h3 th:text="${folder.description}"></h3>
 
-                    <h1 th:text="${folder.name}">
 
-                    </h1>
-                    <div class="mt-3" style="display: flex">
-
-                        <form th:each="category:${categories}" class="me-3">
-                            <input th:value="${folder.id}" hidden th:name="folder_id">
-                            <input th:value="${category.id}" hidden th:name="category_id">
-                            <button type="submit" class="btn bg-success">❌<span  th:text="${category.name}"></span></button>
-                        </form>
-
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1">➕&nbsp;Добавить категорию</button>
-
+                    <div class="row">
+                        <div class="col-2 mt-3" th:each="category:${categories}" style="display: flex">
+                            <div  class="me-3 text-light" style="display: flex; max-height: 80px" >
+                                <button style="height: 100% ;border-bottom-right-radius: 0; border-top-right-radius: 0; " class="text-light btn bg-success"><span  th:text="${category.name}"></span></button>
+                                <form th:action="@{'/deleteCategory'}" method="post">
+                                    <button style="border-bottom-left-radius: 0; height: 100%; border-top-left-radius: 0;" type="submit" class="btn btn-success">×</button>
+                                    <input th:value="${folder.id}" hidden th:name="folder_id">
+                                    <input th:value="${category.id}" hidden th:name="category_id">
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-3 mt-3" >
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1">+&nbsp;Добавить категорию</button>
+                        </div>
                     </div>
+
+
                 </div>
             </div>
 
@@ -38,7 +44,6 @@
                     </form>
                 </div>
             </div>
-
             <div class="row mt-3">
                 <div class="col-12 mx-auto">
                     <table class="table table-striped">
@@ -53,50 +58,56 @@
                             <td th:text="${task.id}" style="width: 10%"></td>
                             <td th:text="${task.description}"></td>
                             <td th:switch="${task.status}" style="width: 20%">
-                            <span class="text-danger fw-bold" th:case="1">не начато</span>
-                            <span class="text-dark fw-bold" th:case="2">в процессе</span>
-                            <span class="text-info fw-bold" th:case="3">почти завершено</span>
-                            <span class="text-success fw-bold" th:case="4">завершено</span>
+                                <span class="text-danger fw-bold" th:case="1">не начато</span>
+                                <span class="text-dark fw-bold" th:case="2">в процессе</span>
+                                <span class="text-info fw-bold" th:case="3">почти завершено</span>
+                                <span class="text-success fw-bold" th:case="4">завершено</span>
                             </td>
-                            <td style="width: 20%"><button class="btn btn-info" >Детали</button></td>
+                            <td style="width: 20%">
+                                <button type="button" style="background: #0a53be" class="btn text-light">
+                                    <a class="text-decoration-none text-light" th:href="@{'/task/'+${task.id}}">Детали</a></button>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
+
+
         </div>
 
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog  modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Тут вы можете добавить новое задание</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog  modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Тут вы можете добавить новое задание</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="post" th:action="@{'/addTask'}" >
+                            <div class="modal-body">
+                                <input type="number" hidden th:value="${folder.id}" name="folderId">
+                                <label for="input1" class="form-label mt-3">Заголовок нового задания</label>
+                                <input type="text" id="input1" class="form-control" name="title"  placeholder="Ввидите краткой описание">
+                                <label for="input2" class="form-label mt-3">Заголовок нового задания</label>
+                                <textarea style="height: 200px" type="text" id="input2" name="description" class="form-control" placeholder="Введите полное описание"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                                <button type="submit" class="btn btn-primary">Добавить</button>
+                            </div>
+                        </form>
                     </div>
-                    <form method="post" th:action="@{'/addTask'}" >
-                    <div class="modal-body">
-                            <input type="number" hidden th:value="${folder.id}" name="folderId">
-                            <label for="input1" class="form-label mt-3">Заголовок нового задания</label>
-                            <input type="text" id="input1" class="form-control" name="title"  placeholder="Ввидите краткой описание">
-                            <label for="input2" class="form-label mt-3">Заголовок нового задания</label>
-                            <textarea style="height: 200px" type="text" id="input2" name="description" class="form-control" placeholder="Введите полное описание"></textarea>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                        <button type="submit" class="btn btn-primary">Добавить</button>
-                    </div>
-                    </form>
                 </div>
             </div>
-        </div>
 
-        <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
-            <div class="modal-dialog  modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel1">Тут вы можете добавить новую категорию</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
+            <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                <div class="modal-dialog  modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel1">Тут вы можете добавить новую категорию</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
 
                         <div class="modal-body" style="display: flex; flex-flow: row; justify-content: space-around">
 
@@ -120,13 +131,14 @@
                         </div>
 
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                    </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        </div>
 
+                    </div>
                 </div>
             </div>
-        </div>
+
 
     </body>
 

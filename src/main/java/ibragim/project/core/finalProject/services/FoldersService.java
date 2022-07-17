@@ -12,4 +12,8 @@ public interface FoldersService {
     public Folder addNewCategoryToFolder(Category category, Long folderId);
     public Folder addCategoryToFolder(Long categoryId, Long folderId);
     public Folder addNewFolder(Folder folder);
+
+    public void deleteFolderById(Long id);
+
+    public Folder deleteCategoryFromFolder(Long folderId, Long categoryId);
 }

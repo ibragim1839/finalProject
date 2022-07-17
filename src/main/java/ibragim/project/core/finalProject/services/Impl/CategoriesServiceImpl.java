@@ -28,4 +28,11 @@ public class CategoriesServiceImpl implements CategoriesService {
         }
         return null;
     }
+
+    @Override
+    public void deleteById(Long id) {
+        if(id!=null){
+            categoriesRepository.deleteById(id);
+        }
+    }
 }
